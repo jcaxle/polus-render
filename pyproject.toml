@@ -1,12 +1,8 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
 [project]
 name = "polus-render"
-version = "0.0.3"
+version = "0.0.3.2"
 authors = [
-  { name="Jeff Chen", email="Jeff.Chen@axleinfo.com" }
+  { name="Jeff Chen", email="Jeff.Chen@axleinfo.com" },
 ]
 description = "Displays Polus Render dashboard in Jupyter Notebooks."
 readme = "README.md"
@@ -16,6 +12,3 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-
-[project.urls]
-"Documentation" = "https://github.com/jcaxle/polus-render"
