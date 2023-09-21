@@ -1,7 +1,6 @@
-import time
 from IPython.display import display, IFrame
 from urllib.parse import ParseResult
-from pathlib import Path, PurePath
+from pathlib import PurePath
 from zarr_file_server import host_zarr
 from threading import Thread
 from socket import socket
@@ -9,6 +8,8 @@ from socket import socket
 def get_free_port()->int:
     """
     Grabs any free port available on the system
+
+    Return: A free port on the system
     """
 
     sock = socket()  # Creates a socket
@@ -19,8 +20,8 @@ def get_free_port()->int:
 
 def render(path:ParseResult|PurePath = "", width:int=960, height:int=500, port:int=0)->None:
     """
-    Displays "https://render.ci.ncats.io/" with args to specify display dimensions and port to serve
-    .zarr files to Polus Render
+    Displays "https://render.ci.ncats.io/" with args to specify display dimensions, port to serve
+    .zarr files to Polus Render, and dataset to use.
     
     Param:
         path (ParseResult|Purepath): Acquired from urllib.parse.ParseResult or Path, renders url in render.

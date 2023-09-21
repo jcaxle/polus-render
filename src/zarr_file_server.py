@@ -1,18 +1,19 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from os import chdir
 from pathlib import PurePath
 import threading
 
+# Thread local variable with .dir parameter specifying what dir the server should be on
 local = threading.local()
+
 class CORSRequestHandler (SimpleHTTPRequestHandler):
     """
     Handler which adds CORS functionality to python's built in http.server
+    and uses directory referenced by local.dir
 
     Args:
         SimpleHTTPRequestHandler (_type_): http.server handler to extend functionality on
     """
     def __init__(self, *args, **kwargs):
-        #print(local.dir)
         super().__init__(directory=local.dir, *args, **kwargs)
 
     def end_headers (self):
@@ -40,6 +41,7 @@ class CORSRequestHandler (SimpleHTTPRequestHandler):
             format (_type_): _description_
         """
         pass
+
 def host_zarr(zarr_file_path:PurePath, port:int=0)->None:
     """
     Generates a web server which points to a .zarr file.
@@ -51,6 +53,9 @@ def host_zarr(zarr_file_path:PurePath, port:int=0)->None:
     """
 
     with HTTPServer(("", port), CORSRequestHandler) as httpd:
+        # Set dir
         global dir
         local.dir = zarr_file_path
+
+        # Serve files
         httpd.serve_forever()
