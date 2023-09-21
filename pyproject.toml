@@ -1,6 +1,6 @@
 [project]
 name = "polus-render"
-version = "0.0.3.2"
+version = "0.0.3.3"
 authors = [
   { name="Jeff Chen", email="Jeff.Chen@axleinfo.com" },
 ]
