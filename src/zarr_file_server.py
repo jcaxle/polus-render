@@ -1,6 +1,7 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import PurePath
 import threading
+import os
 
 # Thread local variable with .dir parameter specifying what dir the server should be on
 local = threading.local()
@@ -42,20 +43,23 @@ class CORSRequestHandler (SimpleHTTPRequestHandler):
         """
         pass
 
-def host_zarr(zarr_file_path:PurePath, port:int=0)->None:
+def host_file(path:PurePath, port:int=0)->None:
     """
-    Generates a web server which points to a .zarr file.
+    Generates a web server which points to a file directory.
 
     NOTE - runs forever, call in a separate thread to run concurrently.
     Args:
-        zarr_file_path (Purepath): File path pointing to a .zarr file
+        path (Purepath): File path pointing to a .zarr file
         port (int): port number to plug server into (default is 0 which is 1st available socket found)
     """
 
     with HTTPServer(("", port), CORSRequestHandler) as httpd:
         # Set dir
-        global dir
-        local.dir = zarr_file_path
+        global local
+        if os.path.isdir(path):
+            local.dir = path
+        else:
+            local.dir = os.path.dirname(path)
 
         # Serve files
         httpd.serve_forever()
