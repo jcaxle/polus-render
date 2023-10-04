@@ -4,7 +4,6 @@ from pathlib import PurePath
 from zarr_file_server import host_file
 from threading import Thread
 from socket import socket
-import os
 
 RENDER_URL = "http://localhost:4200/"
 
@@ -57,7 +56,7 @@ def render(image_location:ParseResult|PurePath = "", microjson_overlay_location:
         if microjson_overlay_port == 0:
             microjson_overlay_port = get_free_port()
         Thread(target=host_file, args=(microjson_overlay_location,microjson_overlay_port,)).start()
-        microjson_overlay_location = "&overlayUrl=http://localhost:" + str(microjson_overlay_port) + f"/{os.path.basename(microjson_overlay_location)}" 
+        microjson_overlay_location = "&overlayUrl=http://localhost:" + str(microjson_overlay_port) + f"/{(microjson_overlay_location.name)}" 
 
     elif isinstance(microjson_overlay_location, ParseResult):
         microjson_overlay_location = "&overlayUrl=" + microjson_overlay_location.geturl()    
