@@ -6,6 +6,8 @@ from threading import Thread
 from socket import socket
 import os
 
+RENDER_URL = "http://localhost:4200/"
+
 def get_free_port()->int:
     """
     Grabs any free port available on the system
@@ -61,8 +63,8 @@ def render(image_location:ParseResult|PurePath = "", microjson_overlay_location:
         microjson_overlay_location = "&overlayUrl=" + microjson_overlay_location.geturl()    
 
 
-    print(f"rendering http://localhost:4200/{image_location}{microjson_overlay_location}")
+    print(f"rendering {RENDER_URL}{image_location}{microjson_overlay_location}")
     # Display render
-    display(IFrame(src=(f"http://localhost:4200/{image_location}{microjson_overlay_location}")
+    display(IFrame(src=(f"{RENDER_URL}{image_location}{microjson_overlay_location}")
                                                         , width=width, height=height))
     
