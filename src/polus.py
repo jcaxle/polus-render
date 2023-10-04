@@ -4,6 +4,8 @@ from pathlib import PurePath, Path
 from zarr_file_server import host_file
 from threading import Thread
 from socket import socket
+from importlib import resources as impresources
+import pkg_resources
 
 def get_free_port()->int:
     """
@@ -24,7 +26,7 @@ def run_local_render(port:int)->None:
 
     Pre: current in src folder
     """
-    Thread(target=host_file, args=(Path("./apps/render-ui/"),port,)).start()
+    Thread(target=host_file, args=(Path(pkg_resources.resource_filename(__name__, "apps/render-ui")),port,)).start()
 
 
 def render(image_location:ParseResult|PurePath = "", microjson_overlay_location:ParseResult|PurePath = "", width:int=960, height:int=500, image_port:int=0, \
@@ -81,4 +83,3 @@ def render(image_location:ParseResult|PurePath = "", microjson_overlay_location:
     # Display render
     display(IFrame(src=(f"{render_url}{image_location}{microjson_overlay_location}")
                                                         , width=width, height=height))
-    
