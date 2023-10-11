@@ -4,7 +4,7 @@ from pathlib import PurePath, Path
 from zarr_file_server import host_file
 from threading import Thread
 from socket import socket
-from importlib import resources as impresources
+from typing import Union
 import pkg_resources
 
 def get_free_port()->int:
@@ -29,8 +29,8 @@ def run_local_render(port:int)->None:
     Thread(target=host_file, args=(Path(pkg_resources.resource_filename(__name__, "apps/render-ui")),port,)).start()
 
 
-def render(image_location:ParseResult|PurePath = "", microjson_overlay_location:ParseResult|PurePath = "", width:int=960, height:int=500, image_port:int=0, \
-           microjson_overlay_port:int=0, use_local_render:bool=True, render_url:str = "https://render.ci.ncats.io/")->None:
+def render(image_location:Union[ParseResult,PurePath] = "", microjson_overlay_location:Union[ParseResult, PurePath] = "", width:int=960, height:int=500, image_port:int=0, \
+           microjson_overlay_port:int=0, use_local_render:bool=True, render_url:str = "https://render.ci.ncats.io/")->str:
     """
     Displays Polus Render with args to specify display dimensions, port to serve,
     image files to use, and overlay to use.
@@ -47,6 +47,7 @@ def render(image_location:ParseResult|PurePath = "", microjson_overlay_location:
         run_local_render (bool): True to run local build of render with 1st available port, False to use render_url (default is True)
         render_url (str): URL which refers to Polus Render. Used when run_local_render is False. (default is https://render.ci.ncats.io/)
     Pre: zarr_port and json_port selected (if used) is not in use IF path given is Purepath
+    Returns: Render URL
         
     """
 
@@ -55,9 +56,14 @@ def render(image_location:ParseResult|PurePath = "", microjson_overlay_location:
         # We could've call 0 in host_file to use a random server but we need to know the port number to display render
         if image_port == 0:
             image_port = get_free_port()
+
+        tif_extension = ""
+        # Check if is tif file
+        if image_location.name.endswith(".tif"):
+            tif_extension = image_location.name
         # NOTE - uses local http server to serve local file to render, ran multithreaded b/c server does not end
         Thread(target=host_file, args=(image_location,image_port,)).start()
-        image_location = "?imageUrl=http://localhost:" + str(image_port) + "/"
+        image_location = "?imageUrl=http://localhost:" + str(image_port) + "/" + tif_extension
 
     # Otherwise, extract url from user provided url if provided
     elif isinstance(image_location, ParseResult):
@@ -79,7 +85,10 @@ def render(image_location:ParseResult|PurePath = "", microjson_overlay_location:
         run_local_render(render_port)
         render_url = f"http://localhost:{render_port}"
 
-    print(f"rendering {render_url}{image_location}{microjson_overlay_location}")
+    #print(f"rendering {render_url}{image_location}{microjson_overlay_location}")
     # Display render
     display(IFrame(src=(f"{render_url}{image_location}{microjson_overlay_location}")
                                                         , width=width, height=height))
+    
+    return f"{render_url}{image_location}{microjson_overlay_location}"
+
