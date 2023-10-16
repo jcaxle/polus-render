@@ -1,7 +1,7 @@
 from IPython.display import display, IFrame
 from urllib.parse import ParseResult
 from pathlib import PurePath, Path
-from zarr_file_server import host_file
+from zarr_file_server import host_file, host_application
 from threading import Thread
 from socket import socket
 from typing import Union
@@ -26,7 +26,7 @@ def run_local_render(port:int)->None:
 
     Pre: current in src folder
     """
-    Thread(target=host_file, args=(Path(pkg_resources.resource_filename(__name__, "apps/render-ui")),port,)).start()
+    Thread(target=host_application, args=(Path(pkg_resources.resource_filename(__name__, "apps/render-ui")),port,)).start()
 
 
 def render(image_location:Union[ParseResult,PurePath] = "", microjson_overlay_location:Union[ParseResult, PurePath] = "", width:int=960, height:int=500, image_port:int=0, \
@@ -91,6 +91,3 @@ def render(image_location:Union[ParseResult,PurePath] = "", microjson_overlay_lo
                                                         , width=width, height=height))
     
     return f"{render_url}{image_location}{microjson_overlay_location}"
-
-from pathlib import Path
-print(render(image_location=Path(r"C:\Users\JeffChen\OneDrive - Axle Informatics\Documents\zarr files\x00_y01_p01_c1.ome.tif")))

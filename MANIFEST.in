@@ -1,1 +1,2 @@
-include src/apps/*
+include src/apps/updog-render/*
+include src/apps/render-ui/*

@@ -1,9 +1,8 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import PurePath
 import threading
-import platform
 import os
-from subprocess import Popen, DEVNULL
+from subprocess import Popen
 
 import pkg_resources
 
@@ -19,23 +18,13 @@ class CORSRequestHandler (SimpleHTTPRequestHandler):
         SimpleHTTPRequestHandler (_type_): http.server handler to extend functionality on
     """
     def __init__(self, *args, **kwargs):
-
-        SimpleHTTPRequestHandler.protocol_version = "HTTP/1.1"
         super().__init__(directory=local.dir, *args, **kwargs)
-
-    def do_GET(self) -> None:
-        self.send_response(206, "Partial Content")
-        return super().do_GET()
 
     def end_headers (self):
         """
         Sends CORS line ending the MIME headers
         """
         self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header("Connection", "keep-alive")
-        self.send_header("Accept-Ranges", "*")
-        self.send_header("keep-alive", "timeout=5")
-        self.send_header("access-control-allow-headers", "*")
         SimpleHTTPRequestHandler.end_headers(self)
 
     def do_OPTIONS(self):
@@ -46,7 +35,7 @@ class CORSRequestHandler (SimpleHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
     
-#    def log_message(self, format, *args):
+    def log_message(self, format, *args):
         """
         NOTE - Overrides HTTPServer.log_message()
 
@@ -55,9 +44,19 @@ class CORSRequestHandler (SimpleHTTPRequestHandler):
         Args:
             format (_type_): _description_
         """
-#        pass
+        pass
 
 def host_file(path:PurePath, port:int=0)->None:
+    global local
+    if os.path.isdir(path):
+        local.dir = path
+    else:
+        local.dir = os.path.dirname(path)
+
+    Popen(["python", pkg_resources.resource_filename(__name__, "apps/updog-render/updog"), "--cors", "-d", local.dir, "-p", f"{port}"])
+
+
+def host_application(path:PurePath, port:int=0)->None:
     """
     Generates a web server which points to a file directory.
 
@@ -67,22 +66,13 @@ def host_file(path:PurePath, port:int=0)->None:
         port (int): port number to plug server into (default is 0 which is 1st available socket found)
     """
 
-    #with HTTPServer(("", port), CORSRequestHandler) as httpd:
+    with HTTPServer(("", port), CORSRequestHandler) as httpd:
         # Set dir
-       
-    pointer = None
-    if os.path.isdir(path):
-        local.dir = path
-    else:
-        local.dir = os.path.dirname(path)
+        global local
+        if os.path.isdir(path):
+            local.dir = path
+        else:
+            local.dir = os.path.dirname(path)
 
-    os_name = platform.system()
-    if os_name == "Windows":
-        Popen([pkg_resources.resource_filename(__name__, "apps/http-server/http-server-win.exe"), "--port", f"{port}", local.dir, "--cors", "-s"], stderr=DEVNULL, stdout=DEVNULL)
-    elif os_name == "Darwin":
-        Popen([pkg_resources.resource_filename(__name__, "apps/http-server/http-server-macos"), "--port", f"{port}", local.dir, "--cors", "-s"], stderr=DEVNULL, stdout=DEVNULL)
-    else:
-        Popen([pkg_resources.resource_filename(__name__, "apps/http-server/http-server-linux"), "--port", f"{port}", local.dir, "--cors", "-s"], stderr=DEVNULL, stdout=DEVNULL)
-
-    # Serve files
-    #httpd.serve_forever()
+        # Serve files
+        httpd.serve_forever()
