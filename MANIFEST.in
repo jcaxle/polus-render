@@ -1,1 +1,1 @@
-include src/apps/render-ui/*
+include src/apps/*

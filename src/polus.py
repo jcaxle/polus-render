@@ -92,3 +92,5 @@ def render(image_location:Union[ParseResult,PurePath] = "", microjson_overlay_lo
     
     return f"{render_url}{image_location}{microjson_overlay_location}"
 
+from pathlib import Path
+print(render(image_location=Path(r"C:\Users\JeffChen\OneDrive - Axle Informatics\Documents\zarr files\x00_y01_p01_c1.ome.tif")))

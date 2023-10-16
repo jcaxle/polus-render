@@ -1,8 +1,12 @@
 # Polus Render
 
-Enables the embedding of content from polus-render within Jupyer notebooks.
-Contains a local build of Polus Render which enables the use of local dataset and MICRO-JSON overlay drag and drop
-into Jupyter Notebook Render IFrames.
+Render application is loaded in an iframe. The package allows pointing the iframe at:
+Render deployed to a server
+A Python server running on localhost and serving a production build of render, which has been bundled with this package
+The are three ways to load the data:
+Specifying a URL to a server
+Specifying a local path will start a Python server on localhost. The URL to the dataset on localhost will be passed to the application in the iframe
+Dragging-and-dropping the dataset does not use a server, it calls an API from the front end (It should the this under the hood https://developer.mozilla.org/en-US/docs/Web/API/File_API)
 
 ![image](https://github.com/jcaxle/polus-render/assets/145499292/2fcd525e-d97a-40fa-87f8-37981bd24be1)
 
