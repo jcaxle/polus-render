@@ -1,0 +1,3 @@
+[submodule "src/apps/updog-render"]
+	path = src/apps/updog-render
+	url = https://github.com/jcaxle/updog-render
