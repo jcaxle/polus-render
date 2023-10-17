@@ -51,14 +51,16 @@ def render(image_location:Union[ParseResult, PurePath] = "", microjson_overlay_l
 
     # Extract url from local file path if provided. ?imageUrl is required scheme for render
     if isinstance(image_location, PurePath):
-        # We could've call 0 in host_file to use a random server but we need to know the port number to display render
-        if image_port == 0:
-            image_port = get_free_port()
 
         tif_extension = ""
         # Check if is tif file
         if image_location.name.endswith(".tif"):
             tif_extension = image_location.name
+            
+        # We could've call 0 in host_file to use a random server but we need to know the port number to display render
+        if image_port == 0:
+            image_port = get_free_port()
+
         # NOTE - uses local http server to serve local file to render, ran multithreaded b/c server does not end
         Thread(target=host_file, args=(image_location,image_port,)).start()
         image_location = "?imageUrl=http://localhost:" + str(image_port) + "/" + tif_extension
