@@ -1,2 +1,3 @@
 include src/apps/updog-render/*
 include src/apps/render-ui/*
+exclude src/apps/http-server/*

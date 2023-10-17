@@ -1,13 +1,13 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import PurePath
-import threading
-import os
-from subprocess import Popen
+from threading import local as t_local
+from os.path import isdir, dirname
+from subprocess import Popen, DEVNULL
 
 import pkg_resources
 
 # Thread local variable with .dir parameter specifying what dir the server should be on
-local = threading.local()
+local = t_local()
 
 class CORSRequestHandler (SimpleHTTPRequestHandler):
     """
@@ -47,19 +47,27 @@ class CORSRequestHandler (SimpleHTTPRequestHandler):
         pass
 
 def host_file(path:PurePath, port:int=0)->None:
-    global local
-    if os.path.isdir(path):
-        local.dir = path
-    else:
-        local.dir = os.path.dirname(path)
+    """
+    Generates a web server to serve files. 
 
-    Popen(["python", pkg_resources.resource_filename(__name__, "apps/updog-render/updog"), "--cors", "-d", local.dir, "-p", f"{port}"])
+    NOTE - use this only to serve files
+    NOTE - runs forever, call in separate thread to run concurrently
+
+    Args:
+        path (PurePath): _description_
+        port (int, optional): _description_. Defaults to 0.
+    """
+    if not isdir(path):
+        path = dirname(path)
+
+    Popen(["python", pkg_resources.resource_filename(__name__, "apps/updog-render/updog/__main__.py"), "--cors", "-d", path, "-p", f"{port}"], stdout=DEVNULL, stderr=DEVNULL)
 
 
 def host_application(path:PurePath, port:int=0)->None:
     """
-    Generates a web server which points to a file directory.
+    Generates a web server to serve applications.
 
+    NOTE - Use this only to host applications locally, use host_file to server files
     NOTE - runs forever, call in a separate thread to run concurrently.
     Args:
         path (Purepath): File path pointing to a .zarr file
@@ -69,10 +77,10 @@ def host_application(path:PurePath, port:int=0)->None:
     with HTTPServer(("", port), CORSRequestHandler) as httpd:
         # Set dir
         global local
-        if os.path.isdir(path):
+        if isdir(path):
             local.dir = path
         else:
-            local.dir = os.path.dirname(path)
+            local.dir = dirname(path)
 
         # Serve files
         httpd.serve_forever()

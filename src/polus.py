@@ -23,13 +23,11 @@ def get_free_port()->int:
 def run_local_render(port:int)->None:
     """
     Runs a local version of render with a specified port number
-
-    Pre: current in src folder
     """
     Thread(target=host_application, args=(Path(pkg_resources.resource_filename(__name__, "apps/render-ui")),port,)).start()
 
 
-def render(image_location:Union[ParseResult,PurePath] = "", microjson_overlay_location:Union[ParseResult, PurePath] = "", width:int=960, height:int=500, image_port:int=0, \
+def render(image_location:Union[ParseResult, PurePath] = "", microjson_overlay_location:Union[ParseResult, PurePath] = "", width:int=960, height:int=500, image_port:int=0, \
            microjson_overlay_port:int=0, use_local_render:bool=True, render_url:str = "https://render.ci.ncats.io/")->str:
     """
     Displays Polus Render with args to specify display dimensions, port to serve,
@@ -85,7 +83,6 @@ def render(image_location:Union[ParseResult,PurePath] = "", microjson_overlay_lo
         run_local_render(render_port)
         render_url = f"http://localhost:{render_port}"
 
-    #print(f"rendering {render_url}{image_location}{microjson_overlay_location}")
     # Display render
     display(IFrame(src=(f"{render_url}{image_location}{microjson_overlay_location}")
                                                         , width=width, height=height))
