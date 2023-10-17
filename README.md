@@ -88,7 +88,7 @@ def render(image_location:Union[ParseResult, PurePath] = "", microjson_overlay_l
 ```
 
 ## Implementation Details
-- render() receives sanatized input.
+- render() receives sanatized input. Check [polus-render-wrapper.py](https://github.com/jcaxle/polus-render/blob/dev-experimental/src/polus-render-wrapper.py) or [sample usage](https://github.com/jcaxle/polus-render/edit/dev-experimental/README.md#sample-usage) for examples on sanitizing input.
 - render() builds up URL scheme fragments for render url, image url, and microjson url.
 - If the image url and microjson url are file paths, serve the files on file servers pointing to either user specified port or a free port.
 - If local render is used, build a server for it as well.
