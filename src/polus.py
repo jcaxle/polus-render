@@ -1,7 +1,7 @@
 from IPython.display import display, IFrame
 from urllib.parse import ParseResult
 from pathlib import PurePath, Path
-from zarr_file_server import host_file
+from zarr_file_server import host_file, host_application
 from threading import Thread
 from socket import socket
 from typing import Union
@@ -23,13 +23,11 @@ def get_free_port()->int:
 def run_local_render(port:int)->None:
     """
     Runs a local version of render with a specified port number
-
-    Pre: current in src folder
     """
-    Thread(target=host_file, args=(Path(pkg_resources.resource_filename(__name__, "apps/render-ui")),port,)).start()
+    Thread(target=host_application, args=(Path(pkg_resources.resource_filename(__name__, "apps/render-ui")),port,)).start()
 
 
-def render(image_location:Union[ParseResult,PurePath] = "", microjson_overlay_location:Union[ParseResult, PurePath] = "", width:int=960, height:int=500, image_port:int=0, \
+def render(image_location:Union[ParseResult, PurePath] = "", microjson_overlay_location:Union[ParseResult, PurePath] = "", width:int=960, height:int=500, image_port:int=0, \
            microjson_overlay_port:int=0, use_local_render:bool=True, render_url:str = "https://render.ci.ncats.io/")->str:
     """
     Displays Polus Render with args to specify display dimensions, port to serve,
@@ -53,14 +51,16 @@ def render(image_location:Union[ParseResult,PurePath] = "", microjson_overlay_lo
 
     # Extract url from local file path if provided. ?imageUrl is required scheme for render
     if isinstance(image_location, PurePath):
-        # We could've call 0 in host_file to use a random server but we need to know the port number to display render
-        if image_port == 0:
-            image_port = get_free_port()
 
         tif_extension = ""
         # Check if is tif file
         if image_location.name.endswith(".tif"):
             tif_extension = image_location.name
+            
+        # We could've call 0 in host_file to use a random server but we need to know the port number to display render
+        if image_port == 0:
+            image_port = get_free_port()
+
         # NOTE - uses local http server to serve local file to render, ran multithreaded b/c server does not end
         Thread(target=host_file, args=(image_location,image_port,)).start()
         image_location = "?imageUrl=http://localhost:" + str(image_port) + "/" + tif_extension
@@ -85,10 +85,8 @@ def render(image_location:Union[ParseResult,PurePath] = "", microjson_overlay_lo
         run_local_render(render_port)
         render_url = f"http://localhost:{render_port}"
 
-    #print(f"rendering {render_url}{image_location}{microjson_overlay_location}")
     # Display render
     display(IFrame(src=(f"{render_url}{image_location}{microjson_overlay_location}")
                                                         , width=width, height=height))
     
     return f"{render_url}{image_location}{microjson_overlay_location}"
-
