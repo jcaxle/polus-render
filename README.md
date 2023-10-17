@@ -1,12 +1,14 @@
 # Polus Render
 
 Render application is loaded in an iframe. The package allows pointing the iframe at:
-Render deployed to a server
-A Python server running on localhost and serving a production build of render, which has been bundled with this package
+* Render deployed to a server
+* A Python server running on localhost and serving a production build of render, which has been bundled with this package
+
 The are three ways to load the data:
-Specifying a URL to a server
-Specifying a local path will start a Python server on localhost. The URL to the dataset on localhost will be passed to the application in the iframe
-Dragging-and-dropping the dataset does not use a server, it calls an API from the front end (It should the this under the hood https://developer.mozilla.org/en-US/docs/Web/API/File_API)
+1. Specifying a URL to a server
+2. Specifying a local path will start a Python server on localhost. The URL to the dataset on localhost will be passed to the application in the iframe
+3. Dragging-and-dropping the dataset does not use a server, it calls an API from the front end (It should the this under the hood https://developer.mozilla.org/en-US/docs/Web/API/File_API)
+</br>
 
 ![image](https://github.com/jcaxle/polus-render/assets/145499292/2fcd525e-d97a-40fa-87f8-37981bd24be1)
 
@@ -62,8 +64,8 @@ render(height=1080)
 
 ## Functions
 ``` Python
-def render(image_location:ParseResult|PurePath = "", microjson_overlay_location:ParseResult|PurePath = "", width:int=960, height:int=500, image_port:int=0, \
-           microjson_overlay_port:int=0, use_local_render:bool=True, render_url:str = "https://render.ci.ncats.io/")->None:
+def render(image_location:Union[ParseResult, PurePath] = "", microjson_overlay_location:Union[ParseResult, PurePath] = "", width:int=960, height:int=500, image_port:int=0, \
+           microjson_overlay_port:int=0, use_local_render:bool=True, render_url:str = "https://render.ci.ncats.io/")->str:
     """
     Displays Polus Render with args to specify display dimensions, port to serve,
     image files to use, and overlay to use.
@@ -80,6 +82,23 @@ def render(image_location:ParseResult|PurePath = "", microjson_overlay_location:
         run_local_render (bool): True to run local build of render with 1st available port, False to use render_url (default is True)
         render_url (str): URL which refers to Polus Render. Used when run_local_render is False. (default is https://render.ci.ncats.io/)
     Pre: zarr_port and json_port selected (if used) is not in use IF path given is Purepath
+    Returns: Render URL
         
     """
 ```
+
+## Implementation Details
+- render() receives sanatized input.
+- render() builds up URL scheme fragments for render url, image url, and microjson url.
+- If the image url and microjson url are file paths, serve the files on file servers pointing to either user specified port or a free port.
+- If local render is used, build a server for it as well.
+- At the end, combine render url fragments into a single url, insert it into an IFrame, and display it.
+- Complete url string is returned not printed.
+
+### Misc Implementation Details
+- Two type of servers are used.
+>1. Python HTTPServer with CORS and OPTIONS functionality to serve RenderUI
+>2. Modified UpDog Flask server to serve local files to RenderUI
+
+## Acknowledgements
+- UpDog: https://github.com/sc0tfree/updog
