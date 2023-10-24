@@ -69,7 +69,7 @@ is accurate as of 10/4/2023.
 ``` Python
 from polus import render
 
-# Path and urllib are built-ins
+# pathlib and urllib are built-ins
 from urllib.parse import urlparse
 from pathlib import Path
 
