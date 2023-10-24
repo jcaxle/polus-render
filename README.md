@@ -12,15 +12,48 @@ The are three ways to load the data:
 
 ![image](https://github.com/jcaxle/polus-render/assets/145499292/2fcd525e-d97a-40fa-87f8-37981bd24be1)
 
-## Requirements
+# Requirements
 * Python 3.9+
 
-## Installation
+# Installation
 ```
 pip install polus-render
 ```
 
-## Render: Local build vs online
+# Dev Installation
+```
+git clone https://github.com/jcaxle/polus-render.git
+cd polus-render
+[optional] python -m venv venv
+[optional] "venv/Scripts/Activate"
+pip install -r requirements.txt
+```
+Optional steps refer to setting up venv which is recommended.
+
+# Project File Structure
+```
+polus-render
+| Build Instructions.md           // Instructions on how to update Pypi project
+| MANIFEST.in                     // Packaging entries
+| pyproject.toml                  // Pypi config 
+| README                          
+| requirements.txt
+└───src
+    | polus.py                    // Main file, contains render function used by user
+    | polus-render-wrapper.py     // Unused file used for a scrapped project. Can be used as a reference for input sanitization
+    | zarr_file_server.py         // Contains server only used for serving local build of Polus Render
+    ├───apps           
+    │   ├───render-ui              // Build files of Polus Render
+    │   └───updog-render           // Server used for serving files.
+```
+
+# Build Instructions
+- Refer to [Build Instructions.md](https://github.com/jcaxle/polus-render/blob/0.0.4/Build%20Instructions.md)
+
+# Submodules
+- [Updog-Render](https://github.com/jcaxle/updog-render/tree/71b6b938452f63412eea8edf29b9ff10f4c243dd)
+
+# Render: Local build vs online
 polus-render is bundled with a build of Polus Render which supports additional functionality compared to the web version. Table
 is accurate as of 10/4/2023.
 | Version           | Zarr from URL/Path | TIF from URL/Path   | Micro-JSON Support | Zarr/TIF Drag & Drop | Micro-JSON Drag & Drop | 
@@ -28,13 +61,15 @@ is accurate as of 10/4/2023.
 | Local | :heavy_check_mark:  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
 | Online | :heavy_check_mark:  |  |  |  | 
 
-## Drag & Drop Demo
+# Drag & Drop Demo
 ![ezgif-4-7162ca42b5](https://github.com/jcaxle/polus-render/assets/145499292/7a59db1e-3128-4ee0-b9cc-ad1be7d3faee)
 
 
-## Sample usage
+# Sample usage
 ``` Python
 from polus import render
+
+# Path and urllib are built-ins
 from urllib.parse import urlparse
 from pathlib import Path
 
@@ -62,7 +97,7 @@ microjson_overlay_location=urlparse("https://files.scb-ncats.io/pyramids/segment
 render(height=1080)
 ```
 
-## Functions
+# Functions
 ``` Python
 def render(image_location:Union[ParseResult, PurePath] = "", microjson_overlay_location:Union[ParseResult, PurePath] = "", width:int=960, height:int=500, image_port:int=0, \
            microjson_overlay_port:int=0, use_local_render:bool=True, render_url:str = "https://render.ci.ncats.io/")->str:
@@ -87,7 +122,7 @@ def render(image_location:Union[ParseResult, PurePath] = "", microjson_overlay_l
     """
 ```
 
-## Implementation Details
+# Implementation Details
 - render() receives sanatized input. Check [polus-render-wrapper.py](https://github.com/jcaxle/polus-render/blob/dev-experimental/src/polus-render-wrapper.py) or [sample usage](https://github.com/jcaxle/polus-render/edit/dev-experimental/README.md#sample-usage) for examples on sanitizing input.
 - render() builds up URL scheme fragments for render url, image url, and microjson url.
 - If the image url and microjson url are file paths, serve the files on file servers pointing to either user specified port or a free port.
@@ -95,10 +130,10 @@ def render(image_location:Union[ParseResult, PurePath] = "", microjson_overlay_l
 - At the end, combine render url fragments into a single url, insert it into an IFrame, and display it.
 - Complete url string is returned not printed.
 
-### Misc Implementation Details
+# Misc Implementation Details
 - Two type of servers are used.
 >1. Python HTTPServer with CORS and OPTIONS functionality to serve RenderUI
 >2. Modified UpDog Flask server to serve local files to RenderUI
 
-## Acknowledgements
+# Acknowledgements
 - UpDog: https://github.com/sc0tfree/updog
