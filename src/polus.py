@@ -1,7 +1,7 @@
 from IPython.display import display, IFrame
 from urllib.parse import ParseResult
 from pathlib import PurePath, Path
-from zarr_file_server import host_file, host_application
+from server import host_file, host_application
 from threading import Thread
 from socket import socket
 from typing import Union
@@ -27,10 +27,10 @@ def run_local_render(port:int)->None:
     Thread(target=host_application, args=(Path(pkg_resources.resource_filename(__name__, "apps/render-ui")),port,)).start()
 
 
-def nb_render(nbhub_url:ParseResult,image_location:Union[ParseResult, PurePath] = "", microjson_overlay_location:Union[ParseResult, PurePath] = "", width:int=960, height:int=500, image_port:int=0, \
-           microjson_overlay_port:int=0, use_local_render:bool=True, render_url:str = "https://render.ci.ncats.io/")->str:
+def nb_render(nbhub_url:ParseResult,image_location:Union[ParseResult, PurePath] = "", microjson_overlay_location:Union[ParseResult, PurePath] = "", width:int=960, height:int=500, \
+            use_local_render:bool=True, render_url:str = "https://render.ci.ncats.io/")->str:
     """
-    Variant of render() used for nbhub. Read render() for usage information
+    Variant of render() used for remote jupyter notebooks. Read render() for usage information
 
     Param:
         nbhub_url: URL used used for jupyterhub. Contains '/lab/' in its uri
@@ -64,13 +64,13 @@ def nb_render(nbhub_url:ParseResult,image_location:Union[ParseResult, PurePath] 
 
     # Local render
     if use_local_render:
-        render_ui = f"{base_nbhub}static/serve/render-ui/index.html"
+        render_url = f"{base_nbhub}static/serve/render-ui/index.html"
     
     # Display render
-    display(IFrame(src=(f"{render_ui}{image_location}{microjson_overlay_location}")
+    display(IFrame(src=(f"{render_url}{image_location}{microjson_overlay_location}")
                                                         , width=width, height=height))
     
-    return f"{render_ui}{image_location}{microjson_overlay_location}"
+    return f"{render_url}{image_location}{microjson_overlay_location}"
 
 def render(image_location:Union[ParseResult, PurePath] = "", microjson_overlay_location:Union[ParseResult, PurePath] = "", width:int=960, height:int=500, image_port:int=0, \
            microjson_overlay_port:int=0, use_local_render:bool=True, render_url:str = "https://render.ci.ncats.io/")->str:
