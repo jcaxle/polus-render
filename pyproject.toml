@@ -9,7 +9,7 @@ namespaces = true
 
 [project]
 name = "polus-render"
-version = "0.0.4.0.1"
+version = "0.0.4.0.1.1"
 authors = [
   { name="Jeff Chen", email="Jeff.Chen@axleinfo.com" },
 ]
