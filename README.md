@@ -73,7 +73,7 @@ is accurate as of 10/4/2023.
 >TODO
 # Sample usage
 ``` Python
-from polus import render, nb_render
+from polus.polus_render import render, nb_render
 
 # pathlib and urllib are built-ins
 from urllib.parse import urlparse
