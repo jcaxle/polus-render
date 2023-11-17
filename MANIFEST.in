@@ -1,3 +1,8 @@
-include src/apps/updog-render/*
-include src/apps/render-ui/*
-exclude src/apps/http-server/*
+include polus/apps/updog-render/*
+include polus/apps/render-ui/*
+exclude polus/apps/http-server/*
+exclude polus/polus-render-wrapper.py
+exclude *.md
+exclude LICENSE
+exclude *.toml
+exclude *.txt
