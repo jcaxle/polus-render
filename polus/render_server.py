@@ -59,8 +59,7 @@ def host_file(path:PurePath, port:int=0)->None:
     """
     if not isdir(path):
         path = dirname(path)
-
-    Popen(["python", pkg_resources.resource_filename(__name__, "apps/updog-render/updog/__main__.py"), "--cors", "-d", path, "-p", f"{port}"], stdout=DEVNULL, stderr=DEVNULL)
+    Popen(["python", pkg_resources.resource_filename(__name__, "apps/updog-render/updog/__main__.py"), "--cors", "-d", f"{path}", "-p", f"{port}"], stdout=DEVNULL, stderr=DEVNULL, )
 
 
 def host_application(path:PurePath, port:int=0)->None:
