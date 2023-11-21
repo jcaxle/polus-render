@@ -29,7 +29,7 @@ dependencies = [
   "werkzeug==3.0.0",
   "pyopenssl==23.2.0",
   "flask_cors==3.0.10",
-  "polus-server-ext@git+https://github.com/jcaxle/polus-server-ext#egg=integration"
+  "polus-server-ext @ git+https://github.com/jcaxle/polus-server-ext.git@integration"
 ]
 
 
