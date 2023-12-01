@@ -50,15 +50,15 @@ polus-render
 ```
 
 # Build Instructions
-- cd to polus-render root directory.
-- 'py -m build'
-- 'py -m twine upload  dist/*'
-- Enter '__token__' as user and reference API keys for password
+- cd to `polus-render` root directory.
+- `py -m build`
+- `py -m twine upload  dist/*`
+- Enter `__token__` as user and reference API keys for password
 
 # Adding a static build of Polus Render
-- Remove all existing files in '~/polus-render/polus/apps/render-ui'. 
-- Run 'npx nx build render-ui' in your Polus Render folder
-- Tranfer generated files from '/Polus Render/dist/apps/render-ui' into '/polus-render/polus/apps/render-ui'. 
+- Remove all existing files in `~/polus-render/polus/apps/render-ui`. 
+- Run `npx nx build render-ui` in your Polus Render folder.
+- Tranfer generated files from `/Polus Render/dist/apps/render-ui` into `/polus-render/polus/apps/render-ui`. 
 
 # Submodules
 - [Updog-Render](https://github.com/jcaxle/updog-render/tree/71b6b938452f63412eea8edf29b9ff10f4c243dd)
@@ -150,14 +150,14 @@ def nb_render(nbhub_url:ParseResult,image_location:Union[ParseResult, PurePath] 
 
 # Implementation Details
 - Render application is loaded in an IFrame.
-- render() and nb_render() builds up URL scheme fragments for render url, image url, and microjson url. It then combines url fragments into a single url which is displayed through an embedded IFrame.
-- Static build of Polus Render as well as files to be displayed in nb_render() are served by Jupyter Server extension
+- `render()` and `nb_render()` builds up URL scheme fragments for render url, image url, and microjson url. It then combines url fragments into a single url which is displayed through an embedded IFrame.
+- Static build of Polus Render as well as files to be displayed in `nb_render()` are served by Jupyter Server extension.
 - Dragging-and-dropping the dataset does not use a server. It calls an API from the front end (It should the this under the hood https://developer.mozilla.org/en-US/docs/Web/API/File_API).
 
 # Misc Implementation Details
 - Two type of servers are used.
->1. Python HTTPServer with CORS and OPTIONS functionality to serve RenderUI
->2. Modified UpDog Flask server to serve local files to RenderUI
+>1. Python HTTPServer with CORS and OPTIONS functionality to serve Render.
+>2. Modified UpDog Flask server to serve local files to Render.
 
 # Acknowledgements
 - UpDog: https://github.com/sc0tfree/updog
