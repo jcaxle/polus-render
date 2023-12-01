@@ -9,11 +9,11 @@ namespaces = true
 
 [project]
 name = "polus-render"
-version = "0.0.4.0.1.5"
+version = "0.1.0"
 authors = [
   { name="Jeff Chen", email="Jeff.Chen@axleinfo.com" },
 ]
-description = "Displays Polus Render dashboard in Jupyter Notebooks."
+description = "Displays Polus Render dashboard in JupyterLabs."
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
