@@ -12,7 +12,7 @@ The are three ways to load the data:
 
 Please note that [jupyterlab_polus_render](https://github.com/PolusAI/jupyterlab-extensions/tree/master/jupyterlab_polus_render) is the improved version of this package.
 
-![image](https://github.com/jcaxle/polus-render/assets/145499292/2fcd525e-d97a-40fa-87f8-37981bd24be1)
+<img src="images/home.png"/>
 
 # Requirements
 * Python 3.9+
@@ -69,7 +69,7 @@ polus-render
 | Local | :heavy_check_mark:  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
 
 # Drag & Drop Demo
-![ezgif-4-7162ca42b5](https://github.com/jcaxle/polus-render/assets/145499292/7a59db1e-3128-4ee0-b9cc-ad1be7d3faee)
+<img src="images/drag-drop.gif"/>
 
 # Sample usage
 ``` Python
